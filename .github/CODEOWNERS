@@ -1,0 +1,8 @@
+# Security-sensitive paths need the owner's review.
+*                       @ZrobDev
+/.claude-plugin/        @ZrobDev
+/.github/               @ZrobDev
+/scripts/               @ZrobDev
+/skills/**/scripts/     @ZrobDev
+/skills/de-vendors/     @ZrobDev
+/agents/                @ZrobDev
