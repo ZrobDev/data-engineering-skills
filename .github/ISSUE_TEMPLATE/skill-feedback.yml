@@ -1,0 +1,33 @@
+name: Skill feedback
+description: A skill or agent did the wrong thing in a real session.
+labels: [skill-feedback]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Skill or agent
+      description: For example sql-tuning, data-cleaning or de-reviewer.
+    validations:
+      required: true
+  - type: textarea
+    id: did
+    attributes:
+      label: What the agent did
+    validations:
+      required: true
+  - type: textarea
+    id: should
+    attributes:
+      label: What it should have done
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        A short excerpt of the session or output that shows the failure. Remove secrets,
+        hostnames, client names and personal data first.
+      render: text
+    validations:
+      required: true
