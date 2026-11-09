@@ -208,7 +208,11 @@ def main() -> int:
         v = vendor(args.vendor)
         print(f"cli: {v.get('cli')}\nmcp: {v.get('mcp')}")
         return 0
-    return {"skills": cmd_skills, "add": cmd_add}.get(args.cmd, lambda _: selftest())(args)
+    if args.cmd == "skills":
+        return cmd_skills(args)
+    if args.cmd == "add":
+        return cmd_add(args)
+    return selftest()
 
 
 if __name__ == "__main__":

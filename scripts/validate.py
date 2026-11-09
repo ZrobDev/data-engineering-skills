@@ -18,12 +18,14 @@ REPO = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 MODELS = {"haiku", "sonnet", "opus", "fable", "inherit"}
 
 
-def frontmatter(path: Path) -> dict[str, str] | None:
+def frontmatter(path: Path) -> str | None:
     m = FRONTMATTER.match(path.read_text())
-    if not m:
-        return None
+    return m.group(1) if m else None
+
+
+def fields(block: str) -> dict[str, str]:
     out = {}
-    for line in m.group(1).splitlines():
+    for line in block.splitlines():
         if line[:1].isspace() or ":" not in line:
             continue
         k, _, v = line.partition(":")
@@ -31,12 +33,11 @@ def frontmatter(path: Path) -> dict[str, str] | None:
     return out
 
 
-def yaml_plain_scalar_errors(path: Path, rel: str) -> list[str]:
+def yaml_plain_scalar_errors(block: str, rel: str) -> list[str]:
     """Stdlib stand-in for a YAML parser on the one mistake that bit us: a plain (unquoted)
     value containing ': ' or ' #' is invalid YAML, and skills.sh silently drops that skill."""
-    m = FRONTMATTER.match(path.read_text())
     out = []
-    for line in (m.group(1).splitlines() if m else []):
+    for line in block.splitlines():
         if line[:1].isspace() or ":" not in line:
             continue
         k, _, v = line.partition(":")
@@ -49,10 +50,11 @@ def yaml_plain_scalar_errors(path: Path, rel: str) -> list[str]:
 
 
 def check_doc(path: Path, expected: str, rel: str) -> list[str]:
-    fm = frontmatter(path)
-    if fm is None:
+    block = frontmatter(path)
+    if block is None:
         return [f"{rel}: missing frontmatter"]
-    out = yaml_plain_scalar_errors(path, rel)
+    fm = fields(block)
+    out = yaml_plain_scalar_errors(block, rel)
     if fm.get("name") != expected:
         out.append(f"{rel}: name {fm.get('name')!r} != {expected!r}")
     if not NAME.match(expected):
@@ -84,7 +86,7 @@ def validate(root: Path) -> list[str]:
     for f in sorted((root / "agents").glob("*.md")):
         rel = f"agents/{f.name}"
         errs += check_doc(f, f.stem, rel)
-        model = (frontmatter(f) or {}).get("model")
+        model = fields(frontmatter(f) or "").get("model")
         if model not in MODELS:
             errs.append(f"{rel}: model {model!r} not pinned to one of {sorted(MODELS)}")
 
