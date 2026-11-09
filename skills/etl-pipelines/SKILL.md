@@ -1,6 +1,6 @@
 ---
 name: etl-pipelines
-description: Use when designing, reviewing or debugging batch ETL/ELT in Python: duplicate or missing rows after a rerun, double-counted backfills, watermark gaps, late-arriving data, retry storms, schema drift breaking a load, scrape-to-warehouse pipelines, a job that silently loads zero rows, or choosing between cron, n8n, Airflow and dlt.
+description: Use when designing, reviewing or debugging batch ETL/ELT in Python - duplicate or missing rows after a rerun, double-counted backfills, watermark gaps, late-arriving data, retry storms, schema drift breaking a load, scrape-to-warehouse pipelines, a job that silently loads zero rows, or choosing between cron, n8n, Airflow and dlt.
 license: MIT
 ---
 

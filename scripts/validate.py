@@ -31,11 +31,28 @@ def frontmatter(path: Path) -> dict[str, str] | None:
     return out
 
 
+def yaml_plain_scalar_errors(path: Path, rel: str) -> list[str]:
+    """Stdlib stand-in for a YAML parser on the one mistake that bit us: a plain (unquoted)
+    value containing ': ' or ' #' is invalid YAML, and skills.sh silently drops that skill."""
+    m = FRONTMATTER.match(path.read_text())
+    out = []
+    for line in (m.group(1).splitlines() if m else []):
+        if line[:1].isspace() or ":" not in line:
+            continue
+        k, _, v = line.partition(":")
+        v = v.strip()
+        if v[:1] in ("'", '"', "|", ">", "[", "{", ""):
+            continue
+        if ": " in v or v.endswith(":") or " #" in v:
+            out.append(f"{rel}: '{k.strip()}' is a plain YAML scalar containing ': ' or ' #'; quote the value")
+    return out
+
+
 def check_doc(path: Path, expected: str, rel: str) -> list[str]:
     fm = frontmatter(path)
     if fm is None:
         return [f"{rel}: missing frontmatter"]
-    out = []
+    out = yaml_plain_scalar_errors(path, rel)
     if fm.get("name") != expected:
         out.append(f"{rel}: name {fm.get('name')!r} != {expected!r}")
     if not NAME.match(expected):

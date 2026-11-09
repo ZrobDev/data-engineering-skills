@@ -1,6 +1,6 @@
 ---
 name: lakehouse
-description: Use when choosing or touching lakehouse storage: Postgres vs warehouse vs lakehouse, Delta vs Iceberg vs DuckLake, slow queries from small parquet files, partitioning, OPTIMIZE/VACUUM/expire_snapshots, MERGE or schema-evolution errors, catalog choice, PySpark collect()/UDF/shuffle/skew, or testing tables locally with DuckDB or polars.
+description: Use when choosing or touching lakehouse storage - Postgres vs warehouse vs lakehouse, Delta vs Iceberg vs DuckLake, slow queries from small parquet files, partitioning, OPTIMIZE/VACUUM/expire_snapshots, MERGE or schema-evolution errors, catalog choice, PySpark collect()/UDF/shuffle/skew, or testing tables locally with DuckDB or polars.
 license: MIT
 ---
 

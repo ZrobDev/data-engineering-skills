@@ -125,6 +125,15 @@ class ValidateGuards(unittest.TestCase):
         self.repo.write("skills/demo/SKILL.md", SKILL.replace("name: demo", "name: other"))
         self.fires("name 'other' != 'demo'")
 
+    def test_unquoted_colon_in_description(self) -> None:
+        # Real YAML rejects ': ' in a plain scalar; skills.sh then silently drops the skill.
+        self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", "Use when testing: a case."))
+        self.fires("quote the value")
+
+    def test_quoted_colon_ok(self) -> None:
+        self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", '"Use when testing: a case."'))
+        self.assertEqual(validate.validate(self.repo.root), [])
+
     def test_missing_gotchas(self) -> None:
         (self.repo.root / "skills/demo/references/gotchas.md").unlink()
         self.fires("missing references/gotchas.md")
