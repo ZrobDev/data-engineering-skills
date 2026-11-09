@@ -76,8 +76,8 @@ def validate(root: Path) -> list[str]:
             errs.append(f"skills/{d.name}: no SKILL.md")
             continue
         errs += check_doc(f, d.name, f"skills/{d.name}/SKILL.md")
-        if len(f.read_text().splitlines()) > 200:
-            errs.append(f"skills/{d.name}/SKILL.md: over 200 lines; move detail to references/")
+        if len(f.read_text().splitlines()) > 150:
+            errs.append(f"skills/{d.name}/SKILL.md: over 150 lines; move detail to references/")
         if not (d / "references" / "gotchas.md").exists():
             errs.append(f"skills/{d.name}: missing references/gotchas.md (feedback loop target)")
 

@@ -147,6 +147,10 @@ class ValidateGuards(unittest.TestCase):
         self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", "Use when testing: a case."))
         self.fires("quote the value")
 
+    def test_skill_over_150_lines(self) -> None:
+        self.repo.write("skills/demo/SKILL.md", SKILL + "line\n" * 150)
+        self.fires("over 150 lines")
+
     def test_quoted_colon_ok(self) -> None:
         self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", '"Use when testing: a case."'))
         self.assertEqual(validate.validate(self.repo.root), [])
