@@ -19,10 +19,11 @@ In scope:
   block padding attacks and hidden payloads.
 - **No remote execution paths.** No pipe-to-shell commands, no base64 blobs, and no network
   imports in skill scripts. Links are restricted to `scripts/url-allowlist.txt`.
-- **No hooks.** No skill pre-approves bare `Bash` or `Bash(*)`. Agents state their model
+- **No hooks.** No repo-level `.claude/` config or `.mcp.json` either. No skill pre-approves bare `Bash` or `Bash(*)`. Agents state their model
   and tools explicitly.
-- **Pinned everything.** GitHub Actions are pinned by SHA, scanner binaries by checksum,
-  Python tools by exact version, and vendor skills by a 40-character commit.
+- **Pinned tools.** GitHub Actions are pinned by SHA, scanner binaries by checksum, and vendor
+  skills by a 40-character commit. Python tools are pinned to an exact version, but their
+  transitive dependencies are not.
 - **Gates on every PR:**
   - content lint (`scripts/lint_content.py`);
   - structure validation;
@@ -30,10 +31,19 @@ In scope:
   - gitleaks across the full history;
   - zizmor on the workflows.
 - **Repository rules:**
-  - `main` changes only by PR, with passing checks and signed commits;
+  - `main` changes only by PR (merge or squash), with passing checks and signed commits;
+  - required checks count only when the GitHub Actions app posts them;
+  - an outside PR needs the code owner's approval of its final commit, and any later push
+    dismisses that approval;
+  - every workflow run from a fork waits for the maintainer's approval;
+  - only GitHub-owned actions and listed actions run, and each must be pinned to a SHA;
+  - CodeQL scans the scripts and workflows (advisory);
   - no force-push;
   - release tags `v*` cannot be moved or deleted;
   - secret scanning with push protection is on.
+- **Contributions go through an issue first.** CI on a PR runs that PR's own copy of the
+  gates, so the maintainer re-runs main's gates on the PR's files. See
+  [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What it does not guarantee
 
