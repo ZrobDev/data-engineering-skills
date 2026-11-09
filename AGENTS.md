@@ -11,6 +11,7 @@ session. Anything you change must still pass `python3 scripts/lint_content.py`,
 - `agents/*.md` holds subagents. Each one pins `model` and lists its `tools`.
 - `.claude-plugin/marketplace.json` defines one plugin with `source: "./"`. This one tree
   serves both the Claude Code plugin channel and skills.sh.
+- `docs/retro/` — one retro per session, newest first; read the newest before host work.
 
 ## Developing
 
