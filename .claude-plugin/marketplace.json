@@ -1,0 +1,16 @@
+{
+  "name": "zrobdev-data",
+  "owner": { "name": "ZrobDev", "url": "https://github.com/ZrobDev" },
+  "metadata": { "description": "Lean data-engineering skills and a haiku/sonnet agent team." },
+  "plugins": [
+    {
+      "name": "data-engineering",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "SQL tuning, data cleaning and reconciliation, ETL pipelines, data modeling, lakehouse reference, a pinned and scanned vendor-skill puller, and de-scout/de-builder/de-reviewer agents.",
+      "author": { "name": "ZrobDev" },
+      "license": "MIT",
+      "keywords": ["data-engineering", "sql", "postgres", "etl", "dbt", "airflow", "lakehouse", "duckdb", "polars"]
+    }
+  ]
+}

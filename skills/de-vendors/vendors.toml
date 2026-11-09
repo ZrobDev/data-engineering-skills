@@ -1,0 +1,84 @@
+# Official vendor skill repos, pinned to a full commit SHA.
+# Bumping a sha is a reviewed change: diff the vendor repo between the old and new sha first.
+# `roots` are the directories searched for */SKILL.md. `cli`/`mcp` lines are PRINTED for the
+# human to review and run; de-vendors never executes them.
+# Resolved 2026-11-09.
+
+[vendor.dbt]
+repo = "dbt-labs/dbt-agent-skills"
+sha = "b8facde20b7a92c40ce3e6b86b71c4b92aa44040"
+license = "Apache-2.0"
+roots = ["skills"]
+cli = "dbt v2 engine: see https://docs.getdbt.com (dbt Core v1 stays pip: uv tool install dbt-core==<pinned>)"
+mcp = "dbt MCP, local: uvx dbt-mcp==<pinned>  (https://github.com/dbt-labs/dbt-mcp)"
+
+[vendor.astronomer]
+repo = "astronomer/agents"
+sha = "35b9610bb2710c37ca11326c4cbf7818b6725fec"
+license = "Apache-2.0"
+roots = ["skills"]
+cli = "astro CLI: brew install astro, or a release binary from https://github.com/astronomer/astro-cli/releases"
+mcp = "astro-airflow-mcp, local, lives in the same repo: https://github.com/astronomer/agents"
+
+[vendor.databricks]
+repo = "databricks/databricks-agent-skills"
+sha = "b079942c0fcad01ec7afc2c37d816c8f1345323a"
+license = "NOASSERTION"
+roots = ["skills"]
+cli = "databricks CLI: brew install databricks, or a release binary from https://github.com/databricks/cli/releases"
+mcp = "Local MCP server in https://github.com/databricks-solutions/ai-dev-kit (review its installer before running it)"
+
+[vendor.snowflake]
+repo = "snowflake-labs/coco-skills"
+sha = "32c70bebac600edc8a712304c88a05b0b7b43382"
+license = "NONE"
+roots = ["skills"]
+cli = "snow CLI: uv tool install snowflake-cli==<pinned>.  Cortex Code CLI: see https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-cli"
+mcp = "https://github.com/Snowflake-Labs/mcp (stale since 2026-05) or Snowflake managed MCP: https://docs.snowflake.com"
+
+[vendor.aws]
+repo = "aws/agent-toolkit-for-aws"
+sha = "6d6948da26c9505fd59ebd5ccaaa68d7cdced5b7"
+license = "Apache-2.0"
+roots = ["plugins/aws-data-analytics/skills"]
+cli = "aws CLI v2: pacman -S aws-cli-v2, or https://docs.aws.amazon.com/cli/"
+mcp = "awslabs MCP servers, local via uvx <server>==<pinned>: https://github.com/awslabs/mcp"
+
+[vendor.duckdb]
+repo = "duckdb/duckdb-skills"
+sha = "7feda8e01e22bc0886c86123f3884947e36d8c69"
+license = "MIT"
+roots = ["skills"]
+cli = "duckdb: pacman -S duckdb, or brew install duckdb"
+mcp = "MotherDuck remote MCP (OAuth): https://github.com/motherduckdb"
+
+[vendor.dlt]
+repo = "dlt-hub/dlthub-ai-workbench"
+sha = "413c3b48ea2f30aa9ccadbf2f79d1be27d1f4ee7"
+license = "NOASSERTION"
+roots = ["workbench"]
+cli = "dlt: uv add dlt==<pinned>  (https://dlthub.com/docs)"
+mcp = "workspace MCP via the dlt CLI: https://dlthub.com/docs"
+
+[vendor.microsoft]
+repo = "microsoft/skills"
+sha = "84666abf77c6b09ed431ab09c516891d0514710e"
+license = "MIT"
+roots = [".github/plugins/azure-sdk-python/skills", ".github/plugins/azure-skills/skills", ".github/plugins/azure-kusto-graph-skills/skills"]
+cli = "az: pacman -S azure-cli.  Fabric CLI: uv tool install ms-fabric-cli==<pinned>"
+mcp = "Azure MCP, local: https://github.com/microsoft/mcp.  Power BI modeling MCP: https://github.com/microsoft/powerbi-modeling-mcp"
+
+[vendor.anthropic-data]
+repo = "anthropics/knowledge-work-plugins"
+sha = "e050c2ec856373787143d7057663a6ebd1277df3"
+license = "Apache-2.0"
+roots = ["data/skills"]
+cli = "none"
+mcp = "see data/.mcp.json in the repo"
+
+# MCP-only (no official skills found 2026-11-09). Printed by `pull_vendor.py info`.
+[mcp_only]
+bigquery = "MCP Toolbox for Databases (Go binary, ADC auth): https://github.com/googleapis/genai-toolbox.  CLI: gcloud + bq from the Google Cloud SDK"
+tableau = "Tableau MCP: https://github.com/tableau/tableau-mcp  (Node package: install pinned with pnpm, never npx)"
+confluent = "Confluent MCP: https://github.com/confluentinc/mcp-confluent  (API key; Node)"
+fivetran = "Fivetran MCP: https://github.com/fivetran/fivetran-mcp  (API key)"

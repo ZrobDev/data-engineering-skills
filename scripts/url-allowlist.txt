@@ -1,0 +1,25 @@
+# Hostnames a skill, agent or doc may link to. One per line; subdomains of a listed host match.
+# Adding a host is a reviewed change: CODEOWNERS covers this file.
+github.com
+skills.sh
+code.claude.com
+docs.claude.com
+owasp.org
+postgresql.org
+use-the-index-luke.com
+duckdb.org
+ducklake.select
+pola.rs
+apache.org
+delta.io
+docs.getdbt.com
+cloud.google.com
+docs.snowflake.com
+docs.aws.amazon.com
+learn.microsoft.com
+docs.databricks.com
+docs.n8n.io
+docs.astral.sh
+dlthub.com
+keepachangelog.com
+semver.org
