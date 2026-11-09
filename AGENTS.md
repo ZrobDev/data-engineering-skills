@@ -17,7 +17,7 @@ session. Anything you change must still pass `python3 scripts/lint_content.py`,
 
 - An installed plugin is a cached copy at its version, and editing the clone does not change
   it. To see edits immediately, start a session with
-  `claude --plugin-dir ~/Projects/skills/data-engineering-skills`.
+  `claude --plugin-dir <path-to-your-clone>`.
 - After a release, `claude plugin update data-engineering@zrobdev-data` refreshes the
   installed copy. Restart the session afterwards.
 - Check that skills.sh can see every skill with `pnpm dlx skills@<pinned> add <clone> --list`.
