@@ -6,5 +6,5 @@ One file per session, newest first, written by the `retro` skill and committed b
 - 2026-11-09 [v0-1-0-initial-release](2026-11-09-v0-1-0-initial-release.md) — main, 697330c..1fb903c — count unresolved review threads before calling a PR mergeable
 
 ## Graduated
-Rules from this repo that passed the two-project-or-one-hour test and now live in `~/.claude/rules/common/lessons.md`.
-- none
+Rules from this repo that passed the two-project-or-one-hour test and now live in the maintainer's global lessons file.
+- 2026-11-09 `before gh pr create, grep every heading pr-body.yml asserts into the body file` — [v0-1-0-initial-release](2026-11-09-v0-1-0-initial-release.md)
