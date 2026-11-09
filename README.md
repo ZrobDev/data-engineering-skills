@@ -63,7 +63,7 @@ they are never run for you.
 Skills change only when they fail in a real session. Open an issue labeled `skill-feedback`
 that describes what the agent did and what it should have done. The fix lands in that skill's
 `references/gotchas.md` or `SKILL.md`, gets a CHANGELOG entry, and ships in a new tag. See
-`AGENTS.md`.
+`AGENTS.md`. To contribute, open an issue first: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Security
 

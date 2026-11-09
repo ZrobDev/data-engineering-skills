@@ -10,6 +10,7 @@ Usage: lint_content.py [ROOT]   (exit 1 on any finding)
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -42,6 +43,17 @@ def allowlist(root: Path) -> set[str]:
 def host_ok(host: str, allowed: set[str]) -> bool:
     host = host.lower().rstrip(".")
     return any(host == a or host.endswith("." + a) for a in allowed)
+
+
+def tracked(root: Path, rel: str) -> bool:
+    """True if git tracks rel under root. Outside a repo nothing is tracked; if git itself
+    can't run, assume tracked so the guard fails closed."""
+    try:
+        r = subprocess.run(["git", "-C", str(root), "ls-files", "--error-unmatch", "--", rel],
+                           capture_output=True)
+    except OSError:
+        return True
+    return r.returncode == 0
 
 
 def tool_findings(rel: str, text: str) -> list[str]:
@@ -78,6 +90,12 @@ def lint(root: Path) -> list[str]:
             continue
         if p.name == "hooks.json":
             findings.append(f"{rel}: hooks.json")
+        # Repo-level agent config runs hooks or injects instructions into any session opened in a
+        # clone. An untracked settings.local.json is the gitignored per-user file, so a local run
+        # must not fire; a tracked one ships to every clone like any other config.
+        local = p.name == "settings.local.json" and not tracked(root, rel)
+        if p.name == ".mcp.json" or (".claude" in rel_parts and not local):
+            findings.append(f"{rel}: repo-level agent config (.claude/ or .mcp.json)")
         if p.suffix.lower() in BAD_EXT:
             findings.append(f"{rel}: binary/archive/office file type {p.suffix}")
             continue

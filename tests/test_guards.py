@@ -4,6 +4,7 @@ Dangerous strings are assembled at runtime so this file itself passes the conten
 """
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -100,6 +101,26 @@ class LintGuards(unittest.TestCase):
         self.repo.write("hooks/hooks.json", "{}")
         self.fires("hooks/ directory")
 
+    def test_claude_dir_settings(self) -> None:
+        self.repo.write(".claude/settings.json", "{}")
+        self.fires("repo-level agent config")
+
+    def test_mcp_json(self) -> None:
+        self.repo.write(".mcp.json", "{}")
+        self.fires("repo-level agent config")
+
+    def test_claude_settings_local_ok(self) -> None:
+        self.repo.write(".claude/settings.local.json", "{}")
+        self.assertEqual(lint_content.lint(self.repo.root), [])
+
+    def test_claude_settings_local_tracked(self) -> None:
+        # Committed, the "local" file ships hooks to every clone; only the untracked one is exempt.
+        self.repo.write(".claude/settings.local.json", "{}")
+        git = ["git", "-C", str(self.repo.root)]
+        subprocess.run([*git, "init", "-q"], check=True)
+        subprocess.run([*git, "add", "-f", ".claude/settings.local.json"], check=True)
+        self.fires("repo-level agent config")
+
     def test_bash_wildcard_in_agent(self) -> None:
         self.repo.write("agents/helper.md", AGENT.replace("Read, Grep", "Read, " + "Bash(*)"))
         self.fires("grants Bash(*)")
@@ -134,6 +155,10 @@ class ValidateGuards(unittest.TestCase):
         # Real YAML rejects ': ' in a plain scalar; skills.sh then silently drops the skill.
         self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", "Use when testing: a case."))
         self.fires("quote the value")
+
+    def test_skill_over_150_lines(self) -> None:
+        self.repo.write("skills/demo/SKILL.md", SKILL + "line\n" * 150)
+        self.fires("over 150 lines")
 
     def test_quoted_colon_ok(self) -> None:
         self.repo.write("skills/demo/SKILL.md", SKILL.replace("Use when testing.", '"Use when testing: a case."'))
