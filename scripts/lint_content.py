@@ -78,6 +78,10 @@ def lint(root: Path) -> list[str]:
             continue
         if p.name == "hooks.json":
             findings.append(f"{rel}: hooks.json")
+        # Repo-level agent config runs hooks or injects instructions into any session opened in a
+        # clone. settings.local.json is the gitignored per-user file, so a local run must not fire.
+        if p.name == ".mcp.json" or (".claude" in rel_parts and p.name != "settings.local.json"):
+            findings.append(f"{rel}: repo-level agent config (.claude/ or .mcp.json)")
         if p.suffix.lower() in BAD_EXT:
             findings.append(f"{rel}: binary/archive/office file type {p.suffix}")
             continue

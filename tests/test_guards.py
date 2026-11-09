@@ -100,6 +100,18 @@ class LintGuards(unittest.TestCase):
         self.repo.write("hooks/hooks.json", "{}")
         self.fires("hooks/ directory")
 
+    def test_claude_dir_settings(self) -> None:
+        self.repo.write(".claude/settings.json", "{}")
+        self.fires("repo-level agent config")
+
+    def test_mcp_json(self) -> None:
+        self.repo.write(".mcp.json", "{}")
+        self.fires("repo-level agent config")
+
+    def test_claude_settings_local_ok(self) -> None:
+        self.repo.write(".claude/settings.local.json", "{}")
+        self.assertEqual(lint_content.lint(self.repo.root), [])
+
     def test_bash_wildcard_in_agent(self) -> None:
         self.repo.write("agents/helper.md", AGENT.replace("Read, Grep", "Read, " + "Bash(*)"))
         self.fires("grants Bash(*)")
