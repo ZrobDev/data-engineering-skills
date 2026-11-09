@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Lint: flag home-directory paths (`/home/<user>/`, `/Users/<user>/`, `~/<dir>`); `~/.<tool>/` passes.
+
 ## [0.1.0] - 2026-11-09
 
 ### Added

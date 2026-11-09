@@ -31,6 +31,8 @@ URL = re.compile(r"https?://[^\s<>()\[\]{}\"'`]+", re.I)
 NET_IMPORT = re.compile(
     r"^\s*(?:import|from)\s+(?:urllib|http|socket|requests|httpx|aiohttp|ftplib|smtplib|telnetlib)\b", re.M
 )
+# A user's home directory names the machine and its owner; ~/.<tool>/ and <placeholders> pass.
+HOME_PATH = re.compile(r"/home/[A-Za-z0-9._-]+/|/Users/[A-Za-z0-9._-]+/|~/[A-Za-z0-9_-]")
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 
 
@@ -118,6 +120,8 @@ def lint(root: Path) -> list[str]:
                 findings.append(f"{rel}:{n}: line {len(line)} chars > {MAX_LINE_LEN}")
             if PIPE_TO_SHELL.search(line):
                 findings.append(f"{rel}:{n}: download piped to a shell")
+            if HOME_PATH.search(line):
+                findings.append(f"{rel}:{n}: home-directory path (machine identifier)")
             if BASE64_BLOB.search(line):
                 findings.append(f"{rel}:{n}: base64-like blob")
             for url in URL.findall(line):
