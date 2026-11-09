@@ -51,10 +51,10 @@ SELECT a.key, a.src_row AS a_row, b.src_row AS b_row,
        a.amount_minor AS a_amt, b.amount_minor AS b_amt,
        b.amount_minor - a.amount_minor AS delta
 FROM a_u a JOIN b_u b USING (key)
-WHERE a.amount_minor IS DISTINCT FROM b.amount_minor
-  AND abs(b.amount_minor - a.amount_minor) > 0;      -- replace 0 with the declared tolerance
+WHERE (a.amount_minor IS NULL) <> (b.amount_minor IS NULL)  -- missing on one side
+   OR abs(b.amount_minor - a.amount_minor) > 0;              -- replace 0 with the declared tolerance
 ```
-Use `IS DISTINCT FROM` so NULL on one side is a mismatch rather than silently dropped.
+Test a one-sided NULL as its own branch. The tolerance arithmetic returns NULL when either side is NULL, so on its own it would silently drop exactly the rows that are missing an amount.
 
 ## Second pass for unmatched rows (labeled)
 ```sql

@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 MAX_BYTES = 64 * 1024
 MAX_LINES = 2000
@@ -25,7 +26,7 @@ BAD_EXT = {
 }
 PIPE_TO_SHELL = re.compile(r"\b(?:curl|wget|iwr|irm)\b[^\n|]*\|\s*(?:sudo\s+)?(?:ba|z|da|fi)?sh\b", re.I)
 BASE64_BLOB = re.compile(r"[A-Za-z0-9+/]{200,}={0,2}")
-URL = re.compile(r"https?://([A-Za-z0-9.-]+)")
+URL = re.compile(r"https?://[^\s<>()\[\]{}\"'`]+", re.I)
 NET_IMPORT = re.compile(
     r"^\s*(?:import|from)\s+(?:urllib|http|socket|requests|httpx|aiohttp|ftplib|smtplib|telnetlib)\b", re.M
 )
@@ -101,7 +102,11 @@ def lint(root: Path) -> list[str]:
                 findings.append(f"{rel}:{n}: download piped to a shell")
             if BASE64_BLOB.search(line):
                 findings.append(f"{rel}:{n}: base64-like blob")
-            for host in URL.findall(line):
+            for url in URL.findall(line):
+                try:
+                    host = urlsplit(url).hostname or ""  # parsed, so user@host and :port can't spoof it
+                except ValueError:
+                    host = ""
                 if not host_ok(host, allowed):
                     findings.append(f"{rel}:{n}: URL host not in scripts/url-allowlist.txt: {host}")
         if p.suffix == ".md":

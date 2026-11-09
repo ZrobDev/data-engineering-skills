@@ -63,6 +63,11 @@ class LintGuards(unittest.TestCase):
         self.repo.write("skills/demo/x.md", "see " + "https://" + "evil.example/payload\n")
         self.fires("URL host not in")
 
+    def test_url_userinfo_spoof(self) -> None:
+        # Real host is after '@'; an allowlisted name before it must not pass.
+        self.repo.write("skills/demo/x.md", "see " + "https://" + "github.com@evil.example/payload\n")
+        self.fires("URL host not in")
+
     def test_allowlisted_subdomain_ok(self) -> None:
         self.repo.write("skills/demo/x.md", "see https://www.postgresql.org/docs/\n")
         self.assertEqual(lint_content.lint(self.repo.root), [])

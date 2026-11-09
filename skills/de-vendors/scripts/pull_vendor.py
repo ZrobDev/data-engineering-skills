@@ -112,6 +112,7 @@ def cmd_add(args: argparse.Namespace) -> int:
         git("sparse-checkout", "set", "--no-cone", *[f"/{available[s]}/" for s in args.skill], cwd=work)
         git("checkout", "-q", "FETCH_HEAD", cwd=work)
 
+        # Validate every skill before touching the project, so one failure installs nothing.
         for s in args.skill:
             src = work / available[s]
             dest = dest_root / s
@@ -125,15 +126,17 @@ def cmd_add(args: argparse.Namespace) -> int:
                                   capture_output=True, text=True)
             if scan.returncode != 0:
                 print(scan.stdout[-4000:], scan.stderr[-2000:], sep="\n")
-                sys.exit(f"{s}: skill-scanner reported high/critical findings (exit {scan.returncode}); not installed")
+                sys.exit(f"{s}: skill-scanner reported high/critical findings (exit {scan.returncode}); nothing installed")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        for s in args.skill:
+            src, dest = work / available[s], dest_root / s
             if dest.exists():
                 shutil.rmtree(dest)
             shutil.copytree(src, dest)
             lock = merge_lock(lock, s, {"vendor": args.vendor, "repo": v["repo"], "sha": v["sha"],
                                         "path": available[s], "license": v["license"]})
+            lock_path.write_text(json.dumps(lock, indent=2) + "\n")  # per skill: folder and lock never diverge
             print(f"installed {s} -> {dest.relative_to(project)}")
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    lock_path.write_text(json.dumps(lock, indent=2) + "\n")
     print(f"lock: {lock_path.relative_to(project)}  (commit it with the skills)")
     print(f"tooling for {args.vendor} (review, then run yourself):\n  cli: {v.get('cli')}\n  mcp: {v.get('mcp')}")
     return 0
